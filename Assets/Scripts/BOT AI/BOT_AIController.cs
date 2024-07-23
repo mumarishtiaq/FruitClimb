@@ -103,6 +103,7 @@ public class BOT_AIController : MonoBehaviour
                                         transform.position.z);
 
             agent.SetDestination(pos);
+            ///jfhufif
             /*if(agent.SetDestination(pos)==false)
             {
                 agent.SetDestination(ScriptReference.instance.tilesInstatioator.AllBlueSpheres[minDIstIndex].transform.position);
