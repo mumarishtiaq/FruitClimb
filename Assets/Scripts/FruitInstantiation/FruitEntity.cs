@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class FruitEntity : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Rigidbody rb;
+
+    private void OnEnable()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        DestroyRigidBody(other);
+    }
+
+    private void DestroyRigidBody(Collider other)
+    {
+        if (other.gameObject.layer == 6)
+        {
+            if (rb != null)
+                Destroy(rb);
+        }
     }
 }
