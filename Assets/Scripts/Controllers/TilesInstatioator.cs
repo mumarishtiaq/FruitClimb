@@ -57,7 +57,7 @@ public class TilesInstatioator : MonoBehaviour
 
 
 
-        InstantiateTiles();
+        //InstantiateTiles();
         GetAllChilds();
         //InstantiateGreenStairs();
         //InstantiateBlueStairs();

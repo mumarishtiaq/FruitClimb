@@ -74,9 +74,12 @@ public class FruitSpawner : MonoBehaviour
         GameObject fruitInstance = Instantiate(fruitPrefab, spawnPosition, Quaternion.identity,fruitsHolder);
         fruitInstance.name = selectedFruit.name;
 
-        fruitInstance.GetComponent<SpriteRenderer>().sprite = selectedFruit.sprite;
+        var fruitEntity = fruitInstance.GetComponent<FruitEntity>();
+        var spriteRendrer = fruitInstance.GetComponent<SpriteRenderer>();
+        spriteRendrer.sprite = selectedFruit.sprite;
+        fruitEntity.spriteRendrer = spriteRendrer;
 
-        fruits.Add(fruitInstance.GetComponent<FruitEntity>());
+        fruits.Add(fruitEntity);
     }
 
     private FruitTemplate GetRandomFruit()
