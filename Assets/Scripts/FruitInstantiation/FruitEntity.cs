@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FruitEntity : MonoBehaviour
 {
+    [HideInInspector] public FruitTemplate template;
     [HideInInspector]public SpriteRenderer spriteRendrer;
     private Rigidbody _rb;
     private AudioSource _source;

@@ -15,5 +15,5 @@ MonoBehaviour:
   name: Mango
   description: Mango gives you +3
   sprite: {fileID: 21300000, guid: 0b2d7e51aff124d448f2af72853e8ad5, type: 3}
-  points: 2
+  points: 3
   color: {r: 0.6580602, g: 0.8679245, b: 0, a: 0}

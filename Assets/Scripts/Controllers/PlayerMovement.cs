@@ -75,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
         #endregion
 
 
-        Camera.main.transform.LookAt(transform.position);
+        //Camera.main.transform.LookAt(transform.position);
 
     }
     #endregion

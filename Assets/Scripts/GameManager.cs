@@ -7,8 +7,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static Action<FruitEntity,GameObject> OnFruitCollected;
+    public static Action<StairEntity,GameObject> OnStairCreated;
 
     [SerializeField] private List<PlayerStats> _playersPool;
+    private StairsSpawner _stairSpawner;
 
    
     private void Reset()
@@ -32,16 +34,21 @@ public class GameManager : MonoBehaviour
     {
         if (_playersPool.Count != 2)
             _playersPool = FindObjectsOfType<PlayerStats>().ToList();
+
+        if(!_stairSpawner)
+            _stairSpawner=FindObjectOfType<StairsSpawner>();
     }
     private void SubscribeEvents(bool doSunscribe)
     {
         if (doSunscribe)
         {
             OnFruitCollected += OnFruitCollectedRequested;
+            OnStairCreated += OnCreateStairRequested;
         }
         else
         {
             OnFruitCollected -= OnFruitCollectedRequested;
+            OnStairCreated -= OnCreateStairRequested;
         }
     }
 
@@ -51,8 +58,17 @@ public class GameManager : MonoBehaviour
 
         if(playerStats.CapacityPoints < playerStats.MaximumCapacity)
         {
+            var pointstoAdd = Mathf.Min(fruit.template.points,playerStats.MaximumCapacity-playerStats.CapacityPoints);
+            Debug.LogWarning("in colecting fruit" + pointstoAdd);
             //adding capacity point
-            playerStats.UpdateCapacityPoints(1);
+            playerStats.UpdateCapacityPoints(pointstoAdd);
+
+            //Increase Count for total collected fruits
+            playerStats.UpdateTotalPoints(pointstoAdd);
+
+            //update Blocker Position
+            _stairSpawner.UpdateBlockerPosition(playerStats);
+
 
             //play fruit collection audio 
             fruit.PlayAudio();
@@ -61,7 +77,30 @@ public class GameManager : MonoBehaviour
             fruit.spriteRendrer.enabled = false;
             Destroy(fruit.gameObject, 1f);
         }
+    }
+    private void OnCreateStairRequested(StairEntity stair, GameObject player)
+    {
+        var playerStats = GetPlayerStats(player);
 
+        if (playerStats.CapacityPoints >= 1)
+        {
+            //subtracting capacity point
+            playerStats.UpdateCapacityPoints(-1);
+
+            //updating stairs remaining
+            playerStats.UpdateStairRemaining(-1);
+
+            //play stair created audio 
+            stair.PlayAudio();
+
+            //set is Created = true, so this stair will not be considered again if collided 
+            stair.IsCreated = true;
+
+            //Display Stair 
+            stair.rendrer.enabled = true;
+
+            
+        }
 
     }
 

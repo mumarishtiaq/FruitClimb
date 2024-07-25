@@ -73,14 +73,14 @@ public class TilesInstatioator : MonoBehaviour
    
     private void Update()
     {
-        if (ScriptReference.instance.pLayerscoreManager.PointsCollected > 0)
-        {
-            LastStair = AllStairsGreen[ScriptReference.instance.pLayerscoreManager.PointsCollected - 1];
+        //if (ScriptReference.instance.pLayerscoreManager.PointsCollected > 0)
+        //{
+        //    LastStair = AllStairsGreen[ScriptReference.instance.pLayerscoreManager.PointsCollected - 1];
 
-            Blocker.transform.position =
-           new Vector3(LastStair.transform.position.x + 0.38f, LastStair.transform.position.y + 0.7f, LastStair.transform.position.z);
+        //    Blocker.transform.position =
+        //   new Vector3(LastStair.transform.position.x + 0.38f, LastStair.transform.position.y + 0.7f, LastStair.transform.position.z);
 
-        }
+        //}
     }
 
     #endregion

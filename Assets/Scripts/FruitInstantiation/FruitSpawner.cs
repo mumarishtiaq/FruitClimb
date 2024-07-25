@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class FruitSpawner : MonoBehaviour
 {
-    public int totalSpawn;
     public FruitTemplate[] fruitTemplates; 
     public GameObject fruitPrefab; 
     public float spawnInterval = 2f; 
@@ -21,7 +20,7 @@ public class FruitSpawner : MonoBehaviour
     {
         fruits = new List<FruitEntity>();
         GetSpawningArea();
-        for (int i = 0; i < totalSpawn; i++)
+        for (int i = 0; i < MatchSettings.MatchLenght/2; i++)
         {
             SpawnFruit(true);
         }
@@ -42,7 +41,7 @@ public class FruitSpawner : MonoBehaviour
     private void CheckFruitSpawn()
     {
         GetSpawningArea();
-        for (int i = 0; i < totalSpawn; i++)
+        for (int i = 0; i < 25; i++)
         {
             SpawnFruit();
         }
@@ -78,7 +77,8 @@ public class FruitSpawner : MonoBehaviour
         var spriteRendrer = fruitInstance.GetComponent<SpriteRenderer>();
         spriteRendrer.sprite = selectedFruit.sprite;
         fruitEntity.spriteRendrer = spriteRendrer;
-
+        fruitEntity.template = selectedFruit;
+        
         fruits.Add(fruitEntity);
     }
 
@@ -90,11 +90,9 @@ public class FruitSpawner : MonoBehaviour
         {
             totalWeight += 1f / fruit.points;
         }
-        Debug.Log("Total weight : "+totalWeight);
 
         // Get a random value
         float randomValue = Random.Range(0f, totalWeight);
-        Debug.Log("random value : " + randomValue);
 
         // Select fruit based on the random value
         float cumulativeWeight = 0f;
