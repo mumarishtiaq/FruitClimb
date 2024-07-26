@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static Action<FruitEntity,GameObject> OnFruitCollected;
-    public static Action<StairEntity,GameObject> OnStairCreated;
+    public static Action<StairEntity,GameObject> OnStairBuild;
 
     [SerializeField] private List<PlayerStats> _playersPool;
     private StairsSpawner _stairSpawner;
@@ -43,12 +43,12 @@ public class GameManager : MonoBehaviour
         if (doSunscribe)
         {
             OnFruitCollected += OnFruitCollectedRequested;
-            OnStairCreated += OnCreateStairRequested;
+            OnStairBuild += OnBuildStairRequested;
         }
         else
         {
             OnFruitCollected -= OnFruitCollectedRequested;
-            OnStairCreated -= OnCreateStairRequested;
+            OnStairBuild -= OnBuildStairRequested;
         }
     }
 
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
             Destroy(fruit.gameObject, 1f);
         }
     }
-    private void OnCreateStairRequested(StairEntity stair, GameObject player)
+    private void OnBuildStairRequested(StairEntity stair, GameObject player)
     {
         var playerStats = GetPlayerStats(player);
 

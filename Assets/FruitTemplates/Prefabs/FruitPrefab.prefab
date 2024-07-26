@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4226713537081937315}
   m_Layer: 0
   m_Name: FruitPrefab
-  m_TagString: Untagged
+  m_TagString: Fruit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,6 +129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed64d8fc5e04d214fa8c0853a092761d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  template: {fileID: 0}
+  spriteRendrer: {fileID: 0}
 --- !u!82 &4226713537081937315
 AudioSource:
   m_ObjectHideFlags: 0

@@ -63,7 +63,7 @@ public class TilesInstatioator : MonoBehaviour
         //InstantiateBlueStairs();
         AllStairsGreen = InstantiateStairs(GreenFirstStair.transform, GreenStairPrefab);
         allBlueStairs = InstantiateStairs(BlueFirstStair.transform, BlueStairPrefab);
-        surface.BuildNavMesh();// re-baking after instantiation--- 
+        //surface.BuildNavMesh();// re-baking after instantiation--- 
         /*foreach (var item in allBlueStairs)
         {
             item.GetComponent<MeshRenderer>().enabled = false;

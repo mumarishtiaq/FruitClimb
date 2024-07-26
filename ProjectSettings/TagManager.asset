@@ -10,6 +10,7 @@ TagManager:
   - GreenSphere
   - BlueSphere
   - BlueStairs
+  - Fruit
   layers:
   - Default
   - TransparentFX

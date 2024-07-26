@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Android;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -15,10 +16,14 @@ public class PlayerMovement : MonoBehaviour
     /*Rotation Smoothning*/
     float turnSmoothTime=0.2f, turnSmoothVelocity;
 
+    public FixedJoystick joystick;
+    public bool isWithJoyStick;
+
     #endregion
 
 
     #region UnityEvents
+
     private void Start()
     {
         Collider col = ground.GetComponent<Collider>();
@@ -38,29 +43,32 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isWithJoyStick)
+        {
+            HorizontalInput = Input.GetAxis("Horizontal");
+            ForwardInput = Input.GetAxis("Vertical");
+        }
+        else
+        {
+            HorizontalInput = joystick.Horizontal;
+            ForwardInput = joystick.Vertical;
+        }
 
-        #region keyboard Input on xAxis and zAxis and movement of Player
-        ////keyboard Input on xAxis and zAxis and movement of Player...
-        HorizontalInput = Input.GetAxis("Horizontal");
-        ForwardInput = Input.GetAxis("Vertical");
+
+            
         float horizonOffset = HorizontalInput * speed * Time.deltaTime;
         float forwardOffset = ForwardInput * speed * Time.deltaTime;
 
        
-        #endregion
 
-        #region Clamping Player Within bounds of Ground
         //-------------Clamping Player Within bounds of Ground-------------------
         float rawHorizonPos = transform.position.x + horizonOffset;
         float rawForwardPos = transform.position.z + forwardOffset;
-        float ClampedHorizontal = Mathf.Clamp(rawHorizonPos, minX, maxX);
         float ClampedVertical = Mathf.Clamp(rawForwardPos, minZ, maxZ);
-        transform.position = new Vector3(rawHorizonPos, transform.position.y, ClampedVertical);// setting position
-                                                                                               //--------------Clamping Done--------------------------
-        #endregion
+        transform.position = new Vector3(rawHorizonPos, transform.position.y, ClampedVertical);
 
 
-        #region setting and smoothning rotation of player a/c to player moving in direction
+
         // --------setting rotation of player a/c to player moving in direction--------
         Vector3 direction = new Vector3(HorizontalInput, 0f, ForwardInput).normalized;
 
@@ -71,15 +79,10 @@ public class PlayerMovement : MonoBehaviour
             float angle = PlayerSmoothRotation(transform.eulerAngles.y, targetAngle); //rotation smoothning
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
         }
-        //---------Setting Rotation Done-------------
-        #endregion
-
-
-        //Camera.main.transform.LookAt(transform.position);
+        
 
     }
-    #endregion
-
+    #endregion UnityEvensts
 
     #region CustomEvents
     /*smoothning player rotation according to movement direction  */

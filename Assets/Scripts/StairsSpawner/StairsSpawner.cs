@@ -22,6 +22,8 @@ public class StairsSpawner : MonoBehaviour
     [SerializeField] private Transform _greenPlayerBlocker;
     [SerializeField] private Transform _bluePlayerBlocker;
 
+    public List<StairEntity> BlueStairs { get => _blueStairs; set => _blueStairs = value; }
+
     private void Reset()
     {
         ResolveReferences();
@@ -92,7 +94,7 @@ public class StairsSpawner : MonoBehaviour
             var pos = new Vector3(x, y, spawnPoint.position.z);
             GameObject stairInstance = Instantiate(stairPrefab,pos,spawnPoint.transform.rotation,holder);
             var rend = stairInstance.GetComponent<MeshRenderer>();
-            rend.enabled = false;
+            //rend.enabled = false;
             var stairEntity = stairInstance.GetComponent<StairEntity>();
             stairEntity.rendrer = rend;
             stairs.Add(stairEntity);

@@ -23,7 +23,7 @@ public class StairEntity : MonoBehaviour
     {
         //notifying game manager to perform actions, when any player try to create stairs
         if (collision.gameObject.CompareTag("Player") && !_isCreated)
-            GameManager.OnStairCreated?.Invoke(this, collision.gameObject);
+            GameManager.OnStairBuild?.Invoke(this, collision.gameObject);
     }
     private void ResolveReferences()
     {
