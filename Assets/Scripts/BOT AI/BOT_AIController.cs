@@ -22,9 +22,10 @@ public class BOT_AIController : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
 
     public StairsSpawner spawner;
+    public FruitSpawner fruitSpawner;
     public NavMeshSurface surface;
 
-    private bool isInTransitOfBuildingStairs = false;
+    public bool isInTransitOfBuildingStairs = false;
 
     private void Start()
     {
@@ -42,35 +43,30 @@ public class BOT_AIController : MonoBehaviour
 
     }
     private Vector3 currentStairDestination;
+
+    public bool isBotSleeping = true;
     private void Update()
     {
-        #region OldWork
-        //if (agent.hasPath == false)
-        //{
-        //    //MoveToNextPoint = true;
-        //    if (agent.remainingDistance <= agent.stoppingDistance)
-        //    {
+        if(isBotSleeping)
+        {
+            agent.ResetPath();
+            agent.isStopped = true;
+            return;
+        }
 
-
-        //        distances.Clear();
-
-        //        GetNearestPoint();
-        //        BotNavigation();
-
-
-
-        //    }
-
-        //}
-        #endregion OldWork
-
+        agent.isStopped = false;
 
 
         if (playerStats.CapacityPoints < playerStats.MaximumCapacity && !isInTransitOfBuildingStairs)
-            CollectFruits();
+        {
+            //CollectFruits();
+            CollectFruitsNewApproach();
+        }
+
 
         else
             BuildStairs();
+
 
     }
 
@@ -102,14 +98,29 @@ public class BOT_AIController : MonoBehaviour
     private void BuildStairs()
     {
         Debug.Log("Aheading towards build stairs");
-
-        if (!isInTransitOfBuildingStairs)
+        var targetStairIndex = Mathf.Min(playerStats.TotalPointsCollected - 1, spawner.BlueStairs.Count -1);
+        if (spawner.BlueStairs.Count > targetStairIndex)
         {
-            isInTransitOfBuildingStairs = true;
-            agent.SetDestination(spawner.BlueStairs[playerStats.TotalPointsCollected].transform.position);
-        }
+            var targetStair = spawner.BlueStairs[targetStairIndex].transform.position;
 
-        //if(transform.position ==)
+            if (!isInTransitOfBuildingStairs)
+            {
+                isInTransitOfBuildingStairs = true;
+                agent.SetDestination(targetStair);
+            }
+        }
+        
+
+
+        if (agent.remainingDistance <= agent.stoppingDistance)
+        {
+            isInTransitOfBuildingStairs = false;
+            //agent.SetDestination(spawner.BlueStairs[0].transform.position);
+        }
+            
+        
+
+       
     }
 
 
@@ -117,6 +128,42 @@ public class BOT_AIController : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
+
+    private void CollectFruitsNewApproach()
+    {
+        // Get the nearest Fruit
+
+        
+
+        if(agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath && fruitSpawner.Fruits.Count>0)
+        {
+            var nearestFruit = FindNearestFruit();
+            Debug.Log($"Agent path : {agent.hasPath}");
+            if (nearestFruit != null)
+            {
+                agent.SetDestination(nearestFruit.transform.position);
+            }
+        }
+
+    }
+    private FruitEntity FindNearestFruit()
+    {
+        Debug.Log("In Finding nearest point");
+        FruitEntity nearestObject = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (FruitEntity fruit in fruitSpawner.Fruits)
+        {
+            float distance = Vector3.Distance(transform.position, fruit.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                nearestObject = fruit;
+            }
+        }
+
+        return nearestObject;
     }
 
 

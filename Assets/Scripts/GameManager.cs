@@ -11,7 +11,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<PlayerStats> _playersPool;
     private StairsSpawner _stairSpawner;
+    private FruitSpawner _fruitSpawner;
 
+    
    
     private void Reset()
     {
@@ -20,6 +22,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+        SetDefaultValues();
+
     }
     private void OnEnable()
     {
@@ -37,6 +41,17 @@ public class GameManager : MonoBehaviour
 
         if(!_stairSpawner)
             _stairSpawner=FindObjectOfType<StairsSpawner>();
+        
+        if(!_fruitSpawner)
+            _fruitSpawner=FindObjectOfType<FruitSpawner>();
+    }
+
+    private void SetDefaultValues()
+    {
+        foreach (var playerStat in _playersPool)
+        {
+            playerStat.StairsRemaining = MatchSettings.MatchLenght;
+        }
     }
     private void SubscribeEvents(bool doSunscribe)
     {
@@ -59,23 +74,26 @@ public class GameManager : MonoBehaviour
         if(playerStats.CapacityPoints < playerStats.MaximumCapacity)
         {
             var pointstoAdd = Mathf.Min(fruit.template.points,playerStats.MaximumCapacity-playerStats.CapacityPoints);
-            Debug.LogWarning("in colecting fruit" + pointstoAdd);
             //adding capacity point
             playerStats.UpdateCapacityPoints(pointstoAdd);
 
             //Increase Count for total collected fruits
             playerStats.UpdateTotalPoints(pointstoAdd);
 
-            //update Blocker Position
+            //update Blocker Position ----------TODO structuring and reduce referencing
             _stairSpawner.UpdateBlockerPosition(playerStats);
 
 
             //play fruit collection audio 
             fruit.PlayAudio();
 
-            //Vanish Fruit
-            fruit.spriteRendrer.enabled = false;
-            Destroy(fruit.gameObject, 1f);
+            //Remove fruit from list
+            _fruitSpawner.Fruits.Remove(fruit);
+
+            ////Vanish Fruit
+            //fruit.spriteRendrer.enabled = false;
+            //Destroy(fruit.gameObject, 1f);
+            fruit.VanishFruit();
         }
     }
     private void OnBuildStairRequested(StairEntity stair, GameObject player)
@@ -88,7 +106,8 @@ public class GameManager : MonoBehaviour
             playerStats.UpdateCapacityPoints(-1);
 
             //updating stairs remaining
-            playerStats.UpdateStairRemaining(-1);
+            //playerStats.UpdateStairRemaining(1);
+            playerStats.StairsRemaining -= 1;
 
             //play stair created audio 
             stair.PlayAudio();
@@ -99,7 +118,6 @@ public class GameManager : MonoBehaviour
             //Display Stair 
             stair.rendrer.enabled = true;
 
-            
         }
 
     }

@@ -8,13 +8,31 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
    public PlayerType PlayerType;
-    public int MaximumCapacity = 10;
+    public PlayerUI playerUI;
+    private int _maximumCapacity = 10;
     private int _stairsRemaining;
     private int capacityPoints;
     private int _totalPointsCollected;
 
     public int CapacityPoints { get => capacityPoints; set => capacityPoints = value; }
-    public int StairsRemaining { get => _stairsRemaining; set => _stairsRemaining = value; }
+    public int StairsRemaining
+    {
+        get => _stairsRemaining;
+        set { _stairsRemaining = value;
+            playerUI.RemainingStaitsTxt = value.ToString();
+        }
+    }
+
+    public int MaximumCapacity
+    {
+        get => _maximumCapacity;
+        set
+        {
+            _maximumCapacity = value;
+            playerUI.MaxCapacity = value.ToString();
+        }
+    }
+
 
     public int TotalPointsCollected { get => _totalPointsCollected; set => _totalPointsCollected = value; }
 

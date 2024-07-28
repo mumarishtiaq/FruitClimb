@@ -131,6 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   template: {fileID: 0}
   spriteRendrer: {fileID: 0}
+  collider: {fileID: 0}
 --- !u!82 &4226713537081937315
 AudioSource:
   m_ObjectHideFlags: 0

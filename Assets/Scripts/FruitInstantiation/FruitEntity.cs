@@ -6,6 +6,7 @@ public class FruitEntity : MonoBehaviour
 {
     [HideInInspector] public FruitTemplate template;
     [HideInInspector]public SpriteRenderer spriteRendrer;
+    [HideInInspector]public Collider collider;
     private Rigidbody _rb;
     private AudioSource _source;
 
@@ -50,6 +51,14 @@ public class FruitEntity : MonoBehaviour
     public void PlayAudio()
     {
         _source.PlayOneShot(_source.clip);
+    }
+
+    public void VanishFruit()
+    {
+        //Vanish Fruit
+        spriteRendrer.enabled = false;
+        collider.enabled = false;
+        Destroy(gameObject, 1f);
     }
 
 }

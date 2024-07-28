@@ -4,23 +4,27 @@ using UnityEngine;
 
 public class FruitSpawner : MonoBehaviour
 {
-    public FruitTemplate[] fruitTemplates; 
-    public GameObject fruitPrefab; 
-    public float spawnInterval = 2f; 
+    public FruitTemplate[] fruitTemplates;
+    public GameObject fruitPrefab;
+    public float spawnInterval = 2f;
     public GameObject Ground;
 
     public Transform fruitsHolder;
-    public List<FruitEntity> fruits;
+    [SerializeField] private List<FruitEntity> _fruits;
+
+    public List<FruitEntity> Fruits { get => _fruits; set => _fruits = value; }
 
     private float timer;
 
     float minX, maxX, minZ, maxZ;
 
+    [SerializeField] private bool _isSpawmFruitsAfterIntervals;
+
     private void Awake()
     {
-        fruits = new List<FruitEntity>();
+        _fruits = new List<FruitEntity>();
         GetSpawningArea();
-        for (int i = 0; i < MatchSettings.MatchLenght/2; i++)
+        for (int i = 0; i < MatchSettings.MatchLenght / 2; i++)
         {
             SpawnFruit(true);
         }
@@ -28,6 +32,10 @@ public class FruitSpawner : MonoBehaviour
 
     void Update()
     {
+        if (!_isSpawmFruitsAfterIntervals)
+            return;
+
+
         timer += Time.deltaTime;
         if (timer >= spawnInterval)
         {
@@ -75,11 +83,13 @@ public class FruitSpawner : MonoBehaviour
 
         var fruitEntity = fruitInstance.GetComponent<FruitEntity>();
         var spriteRendrer = fruitInstance.GetComponent<SpriteRenderer>();
+        var collider = fruitInstance.GetComponent<Collider>();
         spriteRendrer.sprite = selectedFruit.sprite;
         fruitEntity.spriteRendrer = spriteRendrer;
+        fruitEntity.collider = collider;
         fruitEntity.template = selectedFruit;
         
-        fruits.Add(fruitEntity);
+        _fruits.Add(fruitEntity);
     }
 
     private FruitTemplate GetRandomFruit()
