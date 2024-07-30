@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,9 @@ public class OverviewCamera : MonoBehaviour
     public float additionalFollowDistanceX = 2.0f; // Additional distance to follow beyond the ground
 
     public float followDistanceY = 7.0f; 
-    public float additionalFollowDistanceY = 2.0f; 
+    public float additionalFollowDistanceY = 2.0f;
+
+    public static bool IsMovementLock = false;
 
 
     private Vector3 initialPosition;     // Initial position of the camera
@@ -25,7 +28,9 @@ public class OverviewCamera : MonoBehaviour
         if (player == null) return;
         //MOveCameraOnOnlyX();
         //MOveCameraOnXandZ();
-        aa();
+
+        if(!IsMovementLock)
+            FollowCameraNewApproach();
     }
 
     private void MOveCameraOnOnlyX()
@@ -40,7 +45,7 @@ public class OverviewCamera : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);
     }
 
-    private void aa()
+    private void FollowCameraNewApproach()
     {
         // Calculate desired camera X position based on player's X position
         float targetX = Mathf.Clamp(player.position.x, initialPosition.x - followDistanceX, initialPosition.x + followDistanceX);
@@ -66,5 +71,16 @@ public class OverviewCamera : MonoBehaviour
         // Smoothly interpolate camera position towards the target position
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);
 
+    }
+
+    public void TweenCameraToTargetPosition(Transform target, float duration = 2f)
+    {
+        // Move the camera to the target position
+        var offset = new Vector3(-7f, 5f, -2.5f);
+        var newCamPos = target.position + offset;
+        transform.DOMove(newCamPos, duration).SetEase(Ease.InOutQuad);
+
+        // Rotate the camera to look at the target
+        transform.DORotateQuaternion(Quaternion.LookRotation(target.position - newCamPos), duration).SetEase(Ease.InOutQuad);
     }
     }

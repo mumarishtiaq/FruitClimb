@@ -9,6 +9,7 @@ public class BOT_AIController : MonoBehaviour
     #region OldWork
     NavMeshAgent agent;
    public  bool MoveToNextPoint = false;
+    
 
 
     public GameObject blueFirstStair;
@@ -23,9 +24,12 @@ public class BOT_AIController : MonoBehaviour
 
     public StairsSpawner spawner;
     public FruitSpawner fruitSpawner;
-    public NavMeshSurface surface;
+    //public NavMeshSurface surface;
 
     public bool isInTransitOfBuildingStairs = false;
+    public GameObject goalPosition;
+
+  
 
     private void Start()
     {
@@ -39,30 +43,28 @@ public class BOT_AIController : MonoBehaviour
         posNew = blueFirstStair.transform.position;
         #endregion OldWork
         playerStats = GetComponent<PlayerStats>();
-        surface.BuildNavMesh();
+        //surface.BuildNavMesh();
 
     }
     private Vector3 currentStairDestination;
 
-    public bool isBotSleeping = true;
+    public static bool IsBotSleeping = true;
     private void Update()
     {
-        if(isBotSleeping)
+        if(IsBotSleeping)
         {
-            agent.ResetPath();
-            agent.isStopped = true;
+            //agent.ResetPath();
+            //agent.isStopped = true;
             return;
         }
 
         agent.isStopped = false;
 
-
-        if (playerStats.CapacityPoints < playerStats.MaximumCapacity && !isInTransitOfBuildingStairs)
+        if (playerStats.CapacityPoints < playerStats.MaximumCapacity && !isInTransitOfBuildingStairs &&
+            playerStats.CapacityPoints <= playerStats.StairsRemaining)
         {
-            //CollectFruits();
-            CollectFruitsNewApproach();
+                CollectFruitsNewApproach();
         }
-
 
         else
             BuildStairs();
@@ -70,52 +72,39 @@ public class BOT_AIController : MonoBehaviour
 
     }
 
-    public Collider[] publicColliders;
-    void CollectFruits()
-    {
-        Debug.Log("Bot in Collecting Fruit");
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
-        publicColliders = hitColliders;
-        Transform closestFruit = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (var hitCollider in hitColliders)
-        {
-            if (hitCollider.CompareTag("Fruit"))
-            {
-                float distance = Vector3.Distance(transform.position, hitCollider.transform.position);
-                closestDistance = distance;
-                closestFruit = hitCollider.transform;
-            }
-        }
-
-        if (closestFruit != null)
-        {
-            agent.SetDestination(closestFruit.position);
-        }
-    }
+   
 
     private void BuildStairs()
     {
         Debug.Log("Aheading towards build stairs");
-        var targetStairIndex = Mathf.Min(playerStats.TotalPointsCollected - 1, spawner.BlueStairs.Count -1);
-        if (spawner.BlueStairs.Count > targetStairIndex)
+
+
+        if (!isInTransitOfBuildingStairs)
         {
+            var targetStairIndex = Mathf.Min(playerStats.TotalPointsCollected - 1, spawner.BlueStairs.Count - 1);
             var targetStair = spawner.BlueStairs[targetStairIndex].transform.position;
+            isInTransitOfBuildingStairs = true;
 
-            if (!isInTransitOfBuildingStairs)
+            if(targetStairIndex == (spawner.BlueStairs.Count-1))
             {
-                isInTransitOfBuildingStairs = true;
-                agent.SetDestination(targetStair);
+                agent.SetDestination(goalPosition.transform.position);
+                Debug.Log("in goal Position");
             }
+            else
+            {
+                agent.SetDestination(targetStair);
+                Debug.Log("in target stair");
+            }
+            
+            //Debug.Log("in setting destination");
         }
-        
 
 
-        if (agent.remainingDistance <= agent.stoppingDistance)
+
+
+        if (agent.remainingDistance <= agent.stoppingDistance )
         {
             isInTransitOfBuildingStairs = false;
-            //agent.SetDestination(spawner.BlueStairs[0].transform.position);
         }
             
         
@@ -135,7 +124,7 @@ public class BOT_AIController : MonoBehaviour
         // Get the nearest Fruit
 
         
-
+        Debug.Log("In Collecting fruit");
         if(agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath && fruitSpawner.Fruits.Count>0)
         {
             var nearestFruit = FindNearestFruit();

@@ -20,7 +20,8 @@ public class FruitSpawner : MonoBehaviour
 
     [SerializeField] private bool _isSpawmFruitsAfterIntervals;
 
-    private void Awake()
+
+    public void SpawnInitialFruits()
     {
         _fruits = new List<FruitEntity>();
         GetSpawningArea();

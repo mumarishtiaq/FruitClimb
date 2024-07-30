@@ -22,21 +22,21 @@ public class StairsSpawner : MonoBehaviour
     [SerializeField] private Transform _greenPlayerBlocker;
     [SerializeField] private Transform _bluePlayerBlocker;
 
-    public List<StairEntity> BlueStairs { get => _blueStairs; set => _blueStairs = value; }
+    public List<StairEntity> BlueStairs { get => _blueStairs;}
 
     private void Reset()
     {
         ResolveReferences();
     }
-    private void Awake()
+    public void SpawmBothStairs()
     {
-        ResolveReferences(()=>
+        ResolveReferences(() =>
         {
             _greenStairs = SpawnStairs(_greenStairsPrefab);
 
             _blueStairs = SpawnStairs(_blueStairsPrefab);
         });
-    }
+    }    
 
     private void ResolveReferences(Action OnReferencesResolved = null)
     {
@@ -88,8 +88,11 @@ public class StairsSpawner : MonoBehaviour
 
         for (int i = 0; i < MatchSettings.MatchLenght; i++)
         {
-            x += 1.350f;
-            y += 0.450f;
+            //x += 1.350f;
+            //y += 0.450f;
+
+            x += 1.33f;
+            y += 0.42f;
 
             var pos = new Vector3(x, y, spawnPoint.position.z);
             GameObject stairInstance = Instantiate(stairPrefab,pos,spawnPoint.transform.rotation,holder);
@@ -119,19 +122,32 @@ public class StairsSpawner : MonoBehaviour
             blocker = _bluePlayerBlocker;
             stairs = _blueStairs;
         }
-            
 
-        if(blocker != null)
+        if (playerStats.PlayerType == PlayerType.Bot)
         {
-            if(stairs.Count > playerStats.TotalPointsCollected)
+            if(_bluePlayerBlocker.gameObject.activeInHierarchy)
+                _bluePlayerBlocker.gameObject.SetActive(false);
+
+            return;
+        }
+
+
+        if (blocker != null)
+        {
+            if (!blocker.gameObject.activeInHierarchy)
+                blocker.gameObject.SetActive(true);
+            var lastStairIndex = stairs.Count - 1;
+            var currentStairIndex = (int)MathF.Min(lastStairIndex, playerStats.TotalPointsCollected);
+
+            if(currentStairIndex == lastStairIndex)
             {
-                var lastStair_asPer_totalCollectedFruits = stairs[playerStats.TotalPointsCollected];
-
-                var blockerPos = new Vector3(lastStair_asPer_totalCollectedFruits.transform.position.x + 0.38f,        lastStair_asPer_totalCollectedFruits.transform.position.y + 0.7f, lastStair_asPer_totalCollectedFruits.transform.position.z);
-
-                blocker.transform.position = blockerPos;
+                blocker.gameObject.SetActive(false);
+                return;
             }
-           
+            var lastStair_asPer_totalCollectedFruits = stairs[currentStairIndex];
+            var offset = new Vector3(.38f, .7f, 0);
+            var blockerPos = lastStair_asPer_totalCollectedFruits.transform.position + offset;
+            blocker.transform.position = blockerPos;
         }
     }
 

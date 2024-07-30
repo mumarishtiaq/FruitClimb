@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     public FixedJoystick joystick;
     public bool isWithJoyStick;
 
+    public static bool isMovementLock = false;
+
     #endregion
 
 
@@ -43,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isMovementLock) return;
+
         if (!isWithJoyStick)
         {
             HorizontalInput = Input.GetAxis("Horizontal");

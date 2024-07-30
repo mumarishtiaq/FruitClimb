@@ -3,17 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GameManager : MonoBehaviour
 {
     public static Action<FruitEntity,GameObject> OnFruitCollected;
     public static Action<StairEntity,GameObject> OnStairBuild;
+    public static Action<GameObject,Transform> OnPlayerReachedAtTargetPoint;
 
     [SerializeField] private List<PlayerStats> _playersPool;
     private StairsSpawner _stairSpawner;
     private FruitSpawner _fruitSpawner;
+    private OverviewCamera _overviewCamera;
+    private NavMeshSurface _navmeshSurface;
 
-    
+    [SerializeField] private MatchType _matchType;
    
     private void Reset()
     {
@@ -22,7 +26,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
-        SetDefaultValues();
+        //InitializeMatch();
 
     }
     private void OnEnable()
@@ -44,14 +48,47 @@ public class GameManager : MonoBehaviour
         
         if(!_fruitSpawner)
             _fruitSpawner=FindObjectOfType<FruitSpawner>();
+        
+        if(!_overviewCamera)
+            _overviewCamera = FindObjectOfType<OverviewCamera>();
+
+        if (!_navmeshSurface)
+            _navmeshSurface = FindObjectOfType<NavMeshSurface>();
     }
 
-    private void SetDefaultValues()
+    public void InitializeMatch()
     {
+        //setting Players setting and stats to default
         foreach (var playerStat in _playersPool)
         {
             playerStat.StairsRemaining = MatchSettings.MatchLenght;
+            playerStat.CapacityPoints = 0;
+            playerStat.IsPlayerWon = false;
         }
+
+        //SpawnStairs
+        _stairSpawner.SpawmBothStairs();
+
+        //spawn initial fruits
+        _fruitSpawner.SpawnInitialFruits();
+
+        //Bake the environment and startBot
+        //start BOT
+        if (_matchType == MatchType.QuickPlay || _matchType == MatchType.Story)
+        {
+            _navmeshSurface.BuildNavMesh();
+            BOT_AIController.IsBotSleeping = false;
+        }
+            
+
+        //Camera movement unlock
+        OverviewCamera.IsMovementLock = false;
+
+        //player(s) movement unlock
+        PlayerMovement.isMovementLock = false;
+
+        
+
     }
     private void SubscribeEvents(bool doSunscribe)
     {
@@ -59,23 +96,25 @@ public class GameManager : MonoBehaviour
         {
             OnFruitCollected += OnFruitCollectedRequested;
             OnStairBuild += OnBuildStairRequested;
+            OnPlayerReachedAtTargetPoint += OnPlayerReachedAtTargetPointRequested;
         }
         else
         {
             OnFruitCollected -= OnFruitCollectedRequested;
             OnStairBuild -= OnBuildStairRequested;
+            OnPlayerReachedAtTargetPoint -= OnPlayerReachedAtTargetPointRequested;
         }
     }
 
-    private void OnFruitCollectedRequested(FruitEntity fruit, GameObject player)
+    private void OnFruitCollectedRequested(FruitEntity fruit, GameObject playerGO)
     {
-        var playerStats = GetPlayerStats(player);
+        var playerStats = GetPlayerStats(playerGO);
 
         if(playerStats.CapacityPoints < playerStats.MaximumCapacity)
         {
             var pointstoAdd = Mathf.Min(fruit.template.points,playerStats.MaximumCapacity-playerStats.CapacityPoints);
             //adding capacity point
-            playerStats.UpdateCapacityPoints(pointstoAdd);
+            playerStats.CapacityPoints +=pointstoAdd;
 
             //Increase Count for total collected fruits
             playerStats.UpdateTotalPoints(pointstoAdd);
@@ -96,14 +135,14 @@ public class GameManager : MonoBehaviour
             fruit.VanishFruit();
         }
     }
-    private void OnBuildStairRequested(StairEntity stair, GameObject player)
+    private void OnBuildStairRequested(StairEntity stair, GameObject playerGO)
     {
-        var playerStats = GetPlayerStats(player);
+        var playerStats = GetPlayerStats(playerGO);
 
         if (playerStats.CapacityPoints >= 1)
         {
             //subtracting capacity point
-            playerStats.UpdateCapacityPoints(-1);
+            playerStats.CapacityPoints -=1;
 
             //updating stairs remaining
             //playerStats.UpdateStairRemaining(1);
@@ -120,6 +159,27 @@ public class GameManager : MonoBehaviour
 
         }
 
+    }
+
+    private void OnPlayerReachedAtTargetPointRequested(GameObject playerGO,Transform goalTransform)
+    {
+        var playerStats = GetPlayerStats(playerGO);
+
+        //Stop Camera Movement 
+        OverviewCamera.IsMovementLock = true;
+
+        //Tween  Camera to Render won player
+        _overviewCamera.TweenCameraToTargetPosition(goalTransform);
+
+        //Stop Player Movement
+        PlayerMovement.isMovementLock = true;
+
+        //Display player Crown and hide player points
+        playerStats.IsPlayerWon = true;
+
+        //Start player won animation
+
+        // display game over UI
     }
 
     private PlayerStats GetPlayerStats(GameObject player)
