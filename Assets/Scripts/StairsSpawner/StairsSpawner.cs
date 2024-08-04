@@ -96,9 +96,9 @@ public class StairsSpawner : MonoBehaviour
 
             var pos = new Vector3(x, y, spawnPoint.position.z);
             GameObject stairInstance = Instantiate(stairPrefab,pos,spawnPoint.transform.rotation,holder);
-            var rend = stairInstance.GetComponent<MeshRenderer>();
+            var rend = stairInstance.GetComponentInChildren<MeshRenderer>();
             rend.enabled = false;
-            var stairEntity = stairInstance.GetComponent<StairEntity>();
+            var stairEntity = stairInstance.GetComponentInChildren<StairEntity>();
             stairEntity.rendrer = rend;
             stairs.Add(stairEntity);
 

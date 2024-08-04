@@ -15,9 +15,10 @@ public class GameManager : MonoBehaviour
     private StairsSpawner _stairSpawner;
     private FruitSpawner _fruitSpawner;
     private OverviewCamera _overviewCamera;
+    private TargetPoint _targetPoint;
     private NavMeshSurface _navmeshSurface;
 
-    [SerializeField] private MatchType _matchType;
+   
    
     private void Reset()
     {
@@ -54,6 +55,9 @@ public class GameManager : MonoBehaviour
 
         if (!_navmeshSurface)
             _navmeshSurface = FindObjectOfType<NavMeshSurface>();
+        
+        if (!_targetPoint)
+            _targetPoint = FindObjectOfType<TargetPoint>();
     }
 
     public void InitializeMatch()
@@ -72,12 +76,17 @@ public class GameManager : MonoBehaviour
         //spawn initial fruits
         _fruitSpawner.SpawnInitialFruits();
 
+        //set End goal dynamic position as per number stairs spawned
+        var stairs = _stairSpawner.BlueStairs;
+        var lastStairTransform = stairs[stairs.Count - 1].transform;
+        _targetPoint.SetEndGoalPosition(lastStairTransform);
+
         //Bake the environment and startBot
         //start BOT
-        if (_matchType == MatchType.QuickPlay || _matchType == MatchType.Story)
+        if (MatchSettings.MatchType == MatchType.QuickPlay || MatchSettings.MatchType == MatchType.Story)
         {
             _navmeshSurface.BuildNavMesh();
-            BOT_AIController.IsBotSleeping = false;
+            //BOT_AIController.IsBotSleeping = false;
         }
             
 
@@ -155,7 +164,8 @@ public class GameManager : MonoBehaviour
             stair.IsCreated = true;
 
             //Display Stair 
-            stair.rendrer.enabled = true;
+            stair.PlayEffectsAndVisualizeStair();
+            //stair.rendrer.enabled = true;
 
         }
 
@@ -173,6 +183,7 @@ public class GameManager : MonoBehaviour
 
         //Stop Player Movement
         PlayerMovement.isMovementLock = true;
+        BOT_AIController.IsBotSleeping = true;
 
         //Display player Crown and hide player points
         playerStats.IsPlayerWon = true;

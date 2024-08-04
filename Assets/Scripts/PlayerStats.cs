@@ -9,7 +9,7 @@ public class PlayerStats : MonoBehaviour
 {
     public PlayerType PlayerType;
     public PlayerUI playerUI;
-    private int _maximumCapacity = 10;
+    [SerializeField] private int _maximumCapacity = 10;
     private int _stairsRemaining;
     private int _capacityPoints;
     private int _totalPointsCollected;

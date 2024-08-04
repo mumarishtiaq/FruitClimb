@@ -46,7 +46,6 @@ public class BOT_AIController : MonoBehaviour
         //surface.BuildNavMesh();
 
     }
-    private Vector3 currentStairDestination;
 
     public static bool IsBotSleeping = true;
     private void Update()
@@ -54,7 +53,7 @@ public class BOT_AIController : MonoBehaviour
         if(IsBotSleeping)
         {
             //agent.ResetPath();
-            //agent.isStopped = true;
+            agent.isStopped = true;
             return;
         }
 
