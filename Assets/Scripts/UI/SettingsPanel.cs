@@ -17,6 +17,8 @@ public class SettingsPanel : MonoBehaviour
     [SerializeField] private Button _settingsBtn;
     [SerializeField] private Button _closeBtn;
     [SerializeField] private GameObject _overlay;
+    [SerializeField] private Sprite _buttonOnSprite;
+    [SerializeField] private Sprite _buttonOffSprite;
 
     [Space(10)]
     [Header("---Sounds---")]
@@ -100,8 +102,8 @@ public class SettingsPanel : MonoBehaviour
             var toggle = _controlToggles[i];
             var controlType = (MovementControlType)(i+1);
             toggle.onValueChanged.AddListener((isOn) => _gameSettingsManager.OnMovementControlsChange(controlType,isOn));
-            toggle.onValueChanged.AddListener((isOn) => ChangeAlpha(toggle,isOn));
-            ChangeAlpha(toggle, toggle.isOn);
+            toggle.onValueChanged.AddListener((isOn) => ChangeSprite(toggle,isOn));
+            ChangeSprite(toggle, toggle.isOn);
         }
 
         //effects toggle
@@ -155,14 +157,15 @@ public class SettingsPanel : MonoBehaviour
         _overlay.SetActive(status);
     }
 
-    private void ChangeAlpha(Toggle toggle,bool isOn)
+   
+
+    private void ChangeSprite(Toggle toggle,bool isOn)
     {
         var image = toggle.GetComponentInChildren<Image>();
 
-        var alpha = isOn ? 1f : .5f;
+        var sprite = isOn ? _buttonOnSprite: _buttonOffSprite;
 
-        var color = new Color(1, 1, 1, alpha);
-        image.color = color;
+        image.sprite = sprite;
     }
 
     private void SetInteractable(Selectable selectable, bool isInteractable = false)

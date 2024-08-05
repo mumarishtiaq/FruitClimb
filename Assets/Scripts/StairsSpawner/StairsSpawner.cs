@@ -145,7 +145,7 @@ public class StairsSpawner : MonoBehaviour
                 return;
             }
             var lastStair_asPer_totalCollectedFruits = stairs[currentStairIndex];
-            var offset = new Vector3(.38f, .7f, 0);
+            var offset = new Vector3(-.7f, 1, 0);
             var blockerPos = lastStair_asPer_totalCollectedFruits.transform.position + offset;
             blocker.transform.position = blockerPos;
         }

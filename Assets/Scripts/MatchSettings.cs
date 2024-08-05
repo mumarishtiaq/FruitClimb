@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class MatchSettings 
 {
-    public static int MatchLenght = 50;
+    public static int MatchLenght = 25;
     public static MatchType MatchType = MatchType.QuickPlay;
 }
 

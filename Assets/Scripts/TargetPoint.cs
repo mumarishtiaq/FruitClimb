@@ -9,6 +9,8 @@ public class TargetPoint : MonoBehaviour
     [SerializeField] private GameObject _targetExplosionEffect;
     [SerializeField] private GameObject _flaresOnWin;
 
+    private float _scaleMultiplayer = 100f;
+
     private void Reset()
     {
         ResolveReferences();
@@ -55,24 +57,27 @@ public class TargetPoint : MonoBehaviour
         _targetEffect.SetActive(!isPlayerReached);
     }
 
-    public StairsSpawner spawner;
-   
-    [ContextMenu("TestEndGoalPosition")]
-    private void TestEndGoal()
-    {
-        SetEndGoalPosition(spawner.BlueStairs[spawner.BlueStairs.Count - 1].transform);
-    }
     public void SetEndGoalPosition(Transform lastStair)
     {
         var lastStairPos = lastStair.position;
-        var lastStairScale = lastStair.localScale/2;
-        var platformScale = _platform.localScale / 2;
-        var posX = lastStairPos.x + lastStairScale.x +platformScale.x + _connector.localScale.x -.1f;
+        var lastStairScale = lastStair.localScale / 2;
+        var platformScale = (_platform.localScale / 2) * _scaleMultiplayer;
+
+        var connecterScaleX = _connector.localScale.x * _scaleMultiplayer;
+        var posX = lastStairPos.x + lastStairScale.x + platformScale.x + connecterScaleX - .1f;
 
         var posY = lastStairPos.y - platformScale.y + lastStairScale.y;
 
-        
-
         _endGoal.position = new Vector3(posX, posY, _endGoal.transform.position.z);
     }
+
+
+    //public StairsSpawner spawner;
+
+    //[ContextMenu("TestEndGoalPosition")]
+    //private void TestEndGoal()
+    //{
+    //    SetEndGoalPosition(spawner.BlueStairs[spawner.BlueStairs.Count - 1].transform);
+    //}
+    
 }

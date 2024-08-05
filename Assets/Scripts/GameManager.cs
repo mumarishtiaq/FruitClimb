@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         if (MatchSettings.MatchType == MatchType.QuickPlay || MatchSettings.MatchType == MatchType.Story)
         {
             _navmeshSurface.BuildNavMesh();
-            //BOT_AIController.IsBotSleeping = false;
+            BOT_AIController.IsBotSleeping = false;
         }
             
 
