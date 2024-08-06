@@ -1,23 +1,27 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
     public TextMeshProUGUI progressText; 
-    public GameObject background; 
+    public GameObject background;
+    public CanvasGroup fadeImage;
 
     void Start()
     {
         StartCoroutine(LoadSceneAsync("GUIScene"));
     }
 
-    public IEnumerator LoadSceneAsync(string sceneName, string scenName2 = null)
+    public IEnumerator LoadSceneAsync(string sceneName1, string sceneName2 = null)
     {
+        
         // Begin to load the scene specified additively
-        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName1, LoadSceneMode.Additive);
 
         // Show loading visuals
         SetVisuals(true);
@@ -27,42 +31,45 @@ public class SceneLoader : MonoBehaviour
         {
             float progress = Mathf.Clamp01(loadOperation.progress / 0.9f) * 100;
 
-            // Update the UI Text element with the progress percentage
-            progressText.text = "Loading... " + progress.ToString("F2") + "%";
+            int progressToInt = (int)progress;
+            progressText.text = $"Loading + { progressToInt} %" ;
 
             yield return null;
         }
-
-        // Unloading the old scene, if a scene name is provided
-        if (!string.IsNullOrEmpty(scenName2))
+       
+        if (!string.IsNullOrEmpty(sceneName2))
         {
             // Check if the scene is loaded before attempting to unload it
-            Scene sceneToUnload = SceneManager.GetSceneByName(scenName2);
+            Scene sceneToUnload = SceneManager.GetSceneByName(sceneName2);
             if (sceneToUnload.isLoaded)
             {
                 AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(sceneToUnload);
 
-                // Wait until the unloading is done
                 while (!unloadOperation.isDone)
                 {
                     yield return null;
                 }
             }
-            else
-            {
-                Debug.LogWarning("Scene " + scenName2 + " is not loaded, so it cannot be unloaded.");
-            }
         }
+        yield return fadeImage.DOFade(1, .5f).From(0).WaitForCompletion();
 
         // Hide loading visuals
         SetVisuals(false);
+        yield return fadeImage.DOFade(0, .5f).WaitForCompletion();
     }
 
 
 
     private void SetVisuals(bool isVisible)
     {
+        Debug.Log($"Settings visuals {isVisible}");
         progressText.gameObject.SetActive(isVisible);
         background.SetActive(isVisible);
+    }
+
+    public void LoadAndUnloadScene(string sceneName, string scenName2 = null)
+    {
+        StopAllCoroutines();
+        StartCoroutine(LoadSceneAsync(sceneName, scenName2));
     }
 }

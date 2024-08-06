@@ -21,6 +21,7 @@ public class PlayerStats : MonoBehaviour
         set
         {
             _capacityPoints = value;
+            Debug.Log(value);
             _capacityPointsText.text = value.ToString();
         }
     }
@@ -56,7 +57,7 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    private TMP_Text _capacityPointsText;
+    public TMP_Text _capacityPointsText;
     private GameObject _crown;
 
     private void Reset()

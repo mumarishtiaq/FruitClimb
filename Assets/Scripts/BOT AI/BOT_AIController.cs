@@ -36,7 +36,7 @@ public class BOT_AIController : MonoBehaviour
   
     private void Awake()
     {
-        playerStats = GetComponent<PlayerStats>();
+        playerStats = GetComponentInChildren<PlayerStats>();
         agent = GetComponent<NavMeshAgent>();
     }
 
@@ -46,7 +46,7 @@ public class BOT_AIController : MonoBehaviour
         if(IsBotSleeping)
         {
             //agent.ResetPath();
-            agent.isStopped = true;
+            //agent.isStopped = true;
             return;
         }
 

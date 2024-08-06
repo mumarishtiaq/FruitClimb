@@ -48,6 +48,6 @@ public class UIManager : MonoBehaviour
         if (!_sceneLoader)
             _sceneLoader = FindObjectOfType<SceneLoader>();
 
-        StartCoroutine(_sceneLoader.LoadSceneAsync("GameScene", "GUIScene"));
+        _sceneLoader.LoadAndUnloadScene("GameScene", "GUIScene");
     }
 }
