@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: f33ff774140d2844486ef7aa41e95fe5
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - 'Puffy '
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c2ed24c73b14fcc4888043f06ec7c4b4, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

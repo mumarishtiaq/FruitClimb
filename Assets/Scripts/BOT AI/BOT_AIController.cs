@@ -46,7 +46,7 @@ public class BOT_AIController : MonoBehaviour
         if(IsBotSleeping)
         {
             //agent.ResetPath();
-            //agent.isStopped = true;
+            agent.isStopped = true;
             return;
         }
 
