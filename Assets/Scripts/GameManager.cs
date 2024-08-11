@@ -139,8 +139,6 @@ public class GameManager : MonoBehaviour
             _fruitSpawner.Fruits.Remove(fruit);
 
             ////Vanish Fruit
-            //fruit.spriteRendrer.enabled = false;
-            //Destroy(fruit.gameObject, 1f);
             fruit.VanishFruit();
         }
     }
@@ -171,7 +169,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void OnPlayerReachedAtTargetPointRequested(GameObject playerGO,Transform goalTransform)
+    private void OnPlayerReachedAtTargetPointRequested(GameObject playerGO, Transform goalTransform)
     {
         var playerStats = GetPlayerStats(playerGO);
 
@@ -189,9 +187,14 @@ public class GameManager : MonoBehaviour
         playerStats.IsPlayerWon = true;
 
         //Start player won animation
+        //TODO
 
 
         // display game over UI
+        if (MatchSettings.MatchType == MatchType.QuickPlay || MatchSettings.MatchType == MatchType.Story)
+        {
+            UIManager.OnNotifyUI?.Invoke();
+        }
     }
 
     private PlayerStats GetPlayerStats(GameObject player)

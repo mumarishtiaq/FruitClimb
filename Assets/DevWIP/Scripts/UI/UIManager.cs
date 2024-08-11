@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -9,6 +10,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private SceneLoader _sceneLoader;
 
     [SerializeField] private Button _playButton;
+    [SerializeField] private ResultPopup _resultPopups;
+
+    public static UnityEvent OnNotifyUI;
 
     private void Reset()
     {
